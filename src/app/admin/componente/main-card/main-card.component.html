@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-3">
+      <form class="d-flex" role="search" [formGroup]="clientForm">
+        <input class="form-control me-2" type="search" placeholder="Cliente ID" aria-label="Client" formControlName="playerID">
+        <button class="btn btn-outline-success" type="bottom" (click)="searchPlayer()">Buscar</button>
+      </form>
+      <br>
+      <div *ngIf="client">
+        <p>Nombre: {{client.name}}</p>
+        <p>Saldo: {{client.wallet.amount}}  {{client.wallet.currency.name}}</p>
+        <!--<p>Moneda: {{client.wallet.currency.name}}</p>-->
+        <hr>
+        <h2>RECARGAR</h2>
+        <form [formGroup]="rechargeForm">
+          <div class="mb-3">
+            <label class="form-label">Banco</label>
+            <select class="form-select" aria-label="Default select example" formControlName="bank_id">
+              <option selected>Seleccionar</option>
+              <option *ngFor="let b of banks" [value]="b.id">{{b.name}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Canal</label>
+            <select class="form-select" aria-label="Default select example" formControlName="channel_id">
+              <option selected>Seleccionar</option>
+              <option *ngFor="let c of channels" [value]="c.id">{{c.name}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Moneda</label>
+            <select class="form-select" aria-label="Default select example" formControlName="currency_id">
+              <option selected>Seleccionar</option>
+              <option *ngFor="let c of currencies" [value]="c.id">{{c.name}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="monto" formControlName="amount">
+          </div>
+          <div class="mb-3" *ngIf="editing">
+            <label class="form-label">Observación</label>
+            <textarea class="form-control" formControlName="observation">
+            </textarea>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="showNewTransactions()">Recargar</button>
+          <button type="button" class="btn btn-success" (click)="cancelEdit()" *ngIf="editing">Cancelar Edición</button>
+        </form>
+      </div>
+
+  </div>
+  <div class="col-9">
+    <table class="table" *ngIf="client">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Canal</th>
+        <th scope="col">Banco</th>
+        <th scope="col">Moneda</th>
+        <th scope="col">Tasa de cambio</th>
+        <th scope="col">Monto</th>
+        <th scope="col">Monto cambio</th>
+        <th scope="col">Promotor</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody *ngIf="transanctions">
+        <tr *ngFor="let t of transanctions; let i = index">
+          <th scope="row">{{i+1}}</th>
+          <td>{{t.date | date}}</td>
+          <td>{{t.channel.name}}</td>
+          <td>{{t.bank.name}}</td>
+          <td>{{t.currency.name}}</td>
+          <td>{{t.exchange_rate}}</td>
+          <td>{{t.amount}}</td>
+          <td>{{t.amount_converted}}</td>
+          <td>{{t.promoter.name}}</td>
+          <td>
+            <button type="button" class="btn btn-sm btn-primary" (click)="updateRecharge(t)">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
